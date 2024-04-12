@@ -226,9 +226,9 @@ class RILI(object):
 
     def load_model(self, name):
 
-        print('[*] Loading RILI from models/rili/{}.pt'.format(name))
+        print('[*] Loading RILI from models/rili/experiment1/{}.pt'.format(name))
 
-        checkpoint = torch.load("models/rili/{}.pt".format(name), map_location=self.device)
+        checkpoint = torch.load("models/rili/experiment1/{}.pt".format(name), map_location=self.device)
         self.updates = checkpoint['updates']
         self.autoencoder.load_state_dict(checkpoint['autoencoder'])
         self.policy.load_state_dict(checkpoint['policy'])
@@ -237,3 +237,21 @@ class RILI(object):
         self.ae_optim.load_state_dict(checkpoint['ae_optim'])
         self.policy_optim.load_state_dict(checkpoint['policy_optim'])
         self.critic_optim.load_state_dict(checkpoint['critic_optim'])
+
+    def save_model_witdr(self, name, dir_name):
+
+        print(f'[*] Saving RILI as models/rili/{dir_name}/{name}.pt')
+        if not os.path.exists(f'models/rili/{dir_name}'):
+            os.makedirs(f'models/rili/{dir_name}')
+
+        checkpoint = {
+            'updates': self.updates,
+            'autoencoder': self.autoencoder.state_dict(),
+            'policy': self.policy.state_dict(),
+            'critic': self.critic.state_dict(),
+            'ae_optim': self.ae_optim.state_dict(),
+            'policy_optim': self.policy_optim.state_dict(),
+            'critic_optim': self.critic_optim.state_dict()
+        }
+        torch.save(checkpoint, f"models/rili/{dir_name}/{name}.pt")
+
